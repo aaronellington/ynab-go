@@ -34,7 +34,6 @@ linters:
     - godox
     - ireturn
     - lll
-    - errname
     - nestif
     - paralleltest
     - perfsprint
