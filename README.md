@@ -7,3 +7,15 @@
 ![ynab-go logo](./ops/images/ynab-go.png)
 
 YNAB API client library for Go.
+
+## Getting Started
+
+### Important Links
+- [YNAB API Documentation](https://api.ynab.com/)
+
+
+### Install
+
+```shell
+go get github.com/aaronellington/ynab-go
+```
