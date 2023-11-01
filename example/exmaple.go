@@ -19,20 +19,43 @@ func main() {
 		log.Fatal(err)
 	}
 
-	minimumReconciledTimeForOnBudget := time.Now().Add(time.Hour * -24 * 2)
-	minimumReconciledTimeForOffBudget := time.Now().Add(time.Hour * -24 * 7)
+	twelveHoursAgo := time.Now().Add(time.Hour * -12)
+	beginningOfMonth := getBeginningOfMonth()
+
+	accountsToReconcile := false
+	accountCount := 0
 
 	for _, budget := range budgets.Data.Budgets {
 		for _, account := range budget.Accounts {
+			if account.Closed || account.Deleted {
+				continue
+			}
+
+			accountCount++
+
+			reconciliationTarget := beginningOfMonth
 			if account.OnBudget {
-				if account.LastReconciledAt.Before(minimumReconciledTimeForOnBudget) {
-					log.Printf("Need to reconcile account: %s - %s", budget.Name, account.Name)
-				}
-			} else {
-				if account.LastReconciledAt.Before(minimumReconciledTimeForOffBudget) {
-					log.Printf("Need to reconcile account: %s - %s", budget.Name, account.Name)
-				}
+				reconciliationTarget = twelveHoursAgo
+				account.LastReconciledAt = &beginningOfMonth
+			}
+
+			if account.LastReconciledAt == nil || account.LastReconciledAt.Before(reconciliationTarget) {
+				log.Printf("Need to reconcile account: %s - %s - https://app.ynab.com/%s/accounts/%s", budget.Name, account.Name, budget.ID, account.ID)
+
+				accountsToReconcile = true
 			}
 		}
 	}
+
+	if !accountsToReconcile {
+		log.Printf("All %d accounts have been reconciled recently", accountCount)
+	}
+}
+
+func getBeginningOfMonth() time.Time {
+	now := time.Now()
+	currentYear, currentMonth, _ := now.Date()
+	currentLocation := now.Location()
+
+	return time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, currentLocation)
 }
