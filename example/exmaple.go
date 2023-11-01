@@ -36,7 +36,6 @@ func main() {
 			reconciliationTarget := beginningOfMonth
 			if account.OnBudget {
 				reconciliationTarget = twelveHoursAgo
-				account.LastReconciledAt = &beginningOfMonth
 			}
 
 			if account.LastReconciledAt == nil || account.LastReconciledAt.Before(reconciliationTarget) {
