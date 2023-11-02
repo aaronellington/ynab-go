@@ -230,7 +230,7 @@ type DateFormat struct {
 	Format string `json:"format"`
 }
 
-type LoadAccountPeriodicValue map[any]int64
+type LoadAccountPeriodicValue map[string]int64
 
 type MonthDetail struct {
 	Month        string     `json:"month"`
