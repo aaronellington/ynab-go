@@ -67,3 +67,27 @@ func (s *BudgetsService) Get(
 
 	return target, nil
 }
+
+// Returns settings for a budget. https://api.ynab.com/v1#/Budgets/getBudgetSettingsById
+func (s *BudgetsService) Settings(
+	ctx context.Context,
+	id BudgetID,
+) (BudgetSettingsResponse, error) {
+	request, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		fmt.Sprintf("/budgets/%s/settings", id),
+		http.NoBody,
+	)
+	if err != nil {
+		return BudgetSettingsResponse{}, err
+	}
+
+	target := BudgetSettingsResponse{}
+
+	if err := s.client.Do(request, &target); err != nil {
+		return BudgetSettingsResponse{}, err
+	}
+
+	return target, nil
+}

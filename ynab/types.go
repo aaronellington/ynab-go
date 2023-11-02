@@ -107,6 +107,14 @@ type BudgetDetailResponseData struct {
 	ServerKnowledge int64        `json:"server_knowledge"`
 }
 
+type BudgetSettingsResponse struct {
+	Data BudgetSettingsResponseData `json:"data"`
+}
+
+type BudgetSettingsResponseData struct {
+	Settings BudgetSettings `json:"settings"`
+}
+
 type BudgetDetail struct {
 	BudgetSummary
 	Payees                   []Payee                       `json:"payees"`
@@ -272,9 +280,37 @@ type ScheduledSubTransaction struct {
 	Deleted                bool                      `json:"deleted"`
 }
 
+type BudgetSettings struct {
+	DateFormat     *DateFormat     `json:"date_format"`
+	CurrencyFormat *CurrencyFormat `json:"currency_format"`
+}
+
 type DateFormat struct {
 	Format string `json:"format"`
 }
+
+type AccountsResponse struct {
+	Data AccountsResponseData `json:"data"`
+}
+
+type AccountsResponseData struct {
+	Accounts        []Account `json:"accounts"`
+	ServerKnowledge int64     `json:"server_knowledge"`
+}
+
+type AccountResponse struct {
+	Data AccountResponseData `json:"data"`
+}
+
+type AccountResponseData struct {
+	Account Account `json:"account"`
+}
+
+type PostAccountWrapper struct {
+	Account SaveAccount `json:"account"`
+}
+
+type SaveAccount struct{}
 
 type CurrencyFormat struct {
 	Description      string `json:"description"`
