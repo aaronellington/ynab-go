@@ -33,3 +33,37 @@ func (s *BudgetsService) List(
 
 	return target, nil
 }
+
+// Returns a single budget with all related entities. This resource is effectively a full budget export. https://api.ynab.com/v1#/Budgets/getBudgetById
+func (s *BudgetsService) Get(
+	ctx context.Context,
+	id BudgetID,
+	lastKnowledgeOfServer *int64,
+) (BudgetDetailResponse, error) {
+	path := fmt.Sprintf("/budgets/%s", id)
+	if lastKnowledgeOfServer != nil {
+		path = fmt.Sprintf(
+			"%s?last_knowledge_of_server=%d",
+			path,
+			lastKnowledgeOfServer,
+		)
+	}
+
+	request, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		path,
+		http.NoBody,
+	)
+	if err != nil {
+		return BudgetDetailResponse{}, err
+	}
+
+	target := BudgetDetailResponse{}
+
+	if err := s.client.Do(request, &target); err != nil {
+		return BudgetDetailResponse{}, err
+	}
+
+	return target, nil
+}

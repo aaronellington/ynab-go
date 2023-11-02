@@ -3,26 +3,38 @@ package ynab
 import "time"
 
 type (
-	BudgetID    string
-	AccountID   string
-	AccountType string
-	PayeeID     string
+	AccountID       string
+	AccountType     string
+	BudgetID        string
+	CategoryGroupID string
+	CategoryID      string
+	PayeeID         string
+	PayeeLocationID string
+	GoalType        string
 )
 
 const (
-	AccountTypeChecking       AccountType = "checking"
-	AccountTypeSavings        AccountType = "savings"
+	AccountTypeAutoLoan       AccountType = "autoLoan"
 	AccountTypeCash           AccountType = "cash"
+	AccountTypeChecking       AccountType = "checking"
 	AccountTypeCreditCard     AccountType = "creditCard"
 	AccountTypeLineOfCredit   AccountType = "lineOfCredit"
-	AccountTypeOtherAsset     AccountType = "otherAsset"
-	AccountTypeOtherLiability AccountType = "otherLiability"
-	AccountTypeMortgage       AccountType = "mortgage"
-	AccountTypeAutoLoan       AccountType = "autoLoan"
-	AccountTypeStudentLoan    AccountType = "studentLoan"
-	AccountTypePersonalLoan   AccountType = "personalLoan"
 	AccountTypeMedicalDebt    AccountType = "medicalDebt"
+	AccountTypeMortgage       AccountType = "mortgage"
+	AccountTypeOtherAsset     AccountType = "otherAsset"
 	AccountTypeOtherDebt      AccountType = "otherDebt"
+	AccountTypeOtherLiability AccountType = "otherLiability"
+	AccountTypePersonalLoan   AccountType = "personalLoan"
+	AccountTypeSavings        AccountType = "savings"
+	AccountTypeStudentLoan    AccountType = "studentLoan"
+)
+
+const (
+	GoalTypeTargetCategoryBalance       GoalType = "TB"
+	GoalTypeTargetCategoryBalanceByDate GoalType = "TBD"
+	GoalTypeMonthlyFunding              GoalType = "MF"
+	GoalTypePlanYourSpending            GoalType = "NEED"
+	GoalTypeDebt                        GoalType = "DEBT"
 )
 
 type BudgetSummaryResponse struct {
@@ -32,6 +44,23 @@ type BudgetSummaryResponse struct {
 type BudgetSummaryResponseData struct {
 	Budgets       []BudgetSummary `json:"budgets"`
 	DefaultBudget BudgetSummary   `json:"default_budget"`
+}
+
+type BudgetDetailResponse struct {
+	Data BudgetDetailResponseData
+}
+
+type BudgetDetailResponseData struct {
+	Budget          BudgetDetail `json:"budget"`
+	ServerKnowledge int64        `json:"server_knowledge"`
+}
+
+type BudgetDetail struct {
+	BudgetSummary
+	Payees         []Payee         `json:"payees"`
+	PayeeLocations []PayeeLocation `json:"payee_locations"`
+	CategoryGroups []CategoryGroup `json:"category_groups"`
+	Categories     []Category      `json:"categories"`
 }
 
 type BudgetSummary struct {
@@ -64,6 +93,53 @@ type Account struct {
 	DebtMinimumPayments *LoadAccountPeriodicValue `json:"debt_minimum_payments"`
 	DebtEscrowAmounts   *LoadAccountPeriodicValue `json:"debt_escrow_amounts"`
 	Deleted             bool                      `json:"deleted"`
+}
+
+type Payee struct {
+	ID                PayeeID    `json:"id"`
+	Name              string     `json:"name"`
+	TransferAccountID *AccountID `json:"transfer_account_id"`
+	Deleted           bool       `json:"deleted"`
+}
+
+type PayeeLocation struct {
+	ID        PayeeLocationID `json:"id"`
+	PayeeID   PayeeID         `json:"payee_id"`
+	Latitude  string          `json:"latitude"`
+	Longitude string          `json:"longitude"`
+	Deleted   bool            `json:"deleted"`
+}
+
+type CategoryGroup struct {
+	ID      CategoryGroupID `json:"id"`
+	Name    string          `json:"name"`
+	Hidden  bool            `json:"hidden"`
+	Deleted bool            `json:"deleted"`
+}
+
+type Category struct {
+	ID                     CategoryID      `json:"id"`
+	CategoryGroupID        CategoryGroupID `json:"category_group_id"`
+	CategoryGroupName      string          `json:"category_group_name"`
+	Name                   string          `json:"name"`
+	Hidden                 bool            `json:"hidden"`
+	Note                   string          `json:"note"`
+	Budgeted               int64           `json:"budgeted"`
+	Activity               int64           `json:"activity"`
+	Balance                int64           `json:"balance"`
+	GoalType               *GoalType       `json:"goal_type"`
+	GoalDay                *int32          `json:"goal_day"`
+	GoalCadence            *int32          `json:"goal_cadence"`
+	GoalCadenceFrequency   *int32          `json:"goal_cadence_frequency"`
+	GoalCreationMonth      *string         `json:"goal_creation_month"`
+	GoalTarget             *int64          `json:"goal_target"`
+	GoalTargetMonth        *string         `json:"goal_target_month"`
+	GoalPercentageComplete *int32          `json:"goal_percentage_complete"`
+	GoalMonthsToBudget     *int32          `json:"goal_months_to_budget"`
+	GoalUnderFunded        *int64          `json:"goal_under_funded"`
+	GoalOverallFunded      *int64          `json:"goal_overall_funded"`
+	GoalOverallLeft        *int64          `json:"goal_overall_left"`
+	Deleted                bool            `json:"deleted"`
 }
 
 type DateFormat struct {
