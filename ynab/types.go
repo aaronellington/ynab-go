@@ -89,56 +89,6 @@ const (
 	ScheduleFrequencyEveryOtherYear  ScheduleFrequency = "everyOtherYear"
 )
 
-type BudgetSummaryResponse struct {
-	Data BudgetSummaryResponseData `json:"data"`
-}
-
-type BudgetSummaryResponseData struct {
-	Budgets       []BudgetSummary `json:"budgets"`
-	DefaultBudget BudgetSummary   `json:"default_budget"`
-}
-
-type BudgetDetailResponse struct {
-	Data BudgetDetailResponseData
-}
-
-type BudgetDetailResponseData struct {
-	Budget          BudgetDetail `json:"budget"`
-	ServerKnowledge int64        `json:"server_knowledge"`
-}
-
-type BudgetSettingsResponse struct {
-	Data BudgetSettingsResponseData `json:"data"`
-}
-
-type BudgetSettingsResponseData struct {
-	Settings BudgetSettings `json:"settings"`
-}
-
-type BudgetDetail struct {
-	BudgetSummary
-	Payees                   []Payee                       `json:"payees"`
-	PayeeLocations           []PayeeLocation               `json:"payee_locations"`
-	CategoryGroups           []CategoryGroup               `json:"category_groups"`
-	Categories               []Category                    `json:"categories"`
-	Months                   []MonthDetail                 `json:"months"`
-	Transactions             []TransactionSummary          `json:"transactions"`
-	SubTransactions          []SubTransaction              `json:"subtransactions"`
-	ScheduledTransactions    []ScheduledTransactionSummary `json:"scheduled_transactions"`
-	ScheduledSubTransactions []ScheduledSubTransaction     `json:"scheduled_subtransactions"`
-}
-
-type BudgetSummary struct {
-	ID             BudgetID        `json:"id"`
-	Name           string          `json:"name"`
-	LastModifiedOn time.Time       `json:"last_modified_on"`
-	FirstMonth     string          `json:"first_month"`
-	LastMonth      string          `json:"last_month"`
-	DateFormat     *DateFormat     `json:"date_format"`
-	CurrencyFormat *CurrencyFormat `json:"currency_format"`
-	Accounts       []Account       `json:"accounts"`
-}
-
 type Account struct {
 	ID                  BudgetID                  `json:"id"`
 	Name                string                    `json:"name"`
@@ -160,26 +110,76 @@ type Account struct {
 	Deleted             bool                      `json:"deleted"`
 }
 
-type Payee struct {
-	ID                PayeeID    `json:"id"`
-	Name              string     `json:"name"`
-	TransferAccountID *AccountID `json:"transfer_account_id"`
-	Deleted           bool       `json:"deleted"`
+type AccountResponse struct {
+	Data AccountResponseData `json:"data"`
 }
 
-type PayeeLocation struct {
-	ID        PayeeLocationID `json:"id"`
-	PayeeID   PayeeID         `json:"payee_id"`
-	Latitude  string          `json:"latitude"`
-	Longitude string          `json:"longitude"`
-	Deleted   bool            `json:"deleted"`
+type AccountResponseData struct {
+	Account Account `json:"account"`
 }
 
-type CategoryGroup struct {
-	ID      CategoryGroupID `json:"id"`
-	Name    string          `json:"name"`
-	Hidden  bool            `json:"hidden"`
-	Deleted bool            `json:"deleted"`
+type AccountsResponse struct {
+	Data AccountsResponseData `json:"data"`
+}
+
+type AccountsResponseData struct {
+	Accounts        []Account `json:"accounts"`
+	ServerKnowledge int64     `json:"server_knowledge"`
+}
+
+type BudgetDetail struct {
+	BudgetSummary
+	Payees                   []Payee                       `json:"payees"`
+	PayeeLocations           []PayeeLocation               `json:"payee_locations"`
+	CategoryGroups           []CategoryGroup               `json:"category_groups"`
+	Categories               []Category                    `json:"categories"`
+	Months                   []MonthDetail                 `json:"months"`
+	Transactions             []TransactionSummary          `json:"transactions"`
+	SubTransactions          []SubTransaction              `json:"subtransactions"`
+	ScheduledTransactions    []ScheduledTransactionSummary `json:"scheduled_transactions"`
+	ScheduledSubTransactions []ScheduledSubTransaction     `json:"scheduled_subtransactions"`
+}
+
+type BudgetDetailResponse struct {
+	Data BudgetDetailResponseData
+}
+
+type BudgetDetailResponseData struct {
+	Budget          BudgetDetail `json:"budget"`
+	ServerKnowledge int64        `json:"server_knowledge"`
+}
+
+type BudgetSettings struct {
+	DateFormat     *DateFormat     `json:"date_format"`
+	CurrencyFormat *CurrencyFormat `json:"currency_format"`
+}
+
+type BudgetSettingsResponse struct {
+	Data BudgetSettingsResponseData `json:"data"`
+}
+
+type BudgetSettingsResponseData struct {
+	Settings BudgetSettings `json:"settings"`
+}
+
+type BudgetSummary struct {
+	ID             BudgetID        `json:"id"`
+	Name           string          `json:"name"`
+	LastModifiedOn time.Time       `json:"last_modified_on"`
+	FirstMonth     string          `json:"first_month"`
+	LastMonth      string          `json:"last_month"`
+	DateFormat     *DateFormat     `json:"date_format"`
+	CurrencyFormat *CurrencyFormat `json:"currency_format"`
+	Accounts       []Account       `json:"accounts"`
+}
+
+type BudgetSummaryResponse struct {
+	Data BudgetSummaryResponseData `json:"data"`
+}
+
+type BudgetSummaryResponseData struct {
+	Budgets       []BudgetSummary `json:"budgets"`
+	DefaultBudget BudgetSummary   `json:"default_budget"`
 }
 
 type Category struct {
@@ -207,6 +207,31 @@ type Category struct {
 	Deleted                bool            `json:"deleted"`
 }
 
+type CategoryGroup struct {
+	ID      CategoryGroupID `json:"id"`
+	Name    string          `json:"name"`
+	Hidden  bool            `json:"hidden"`
+	Deleted bool            `json:"deleted"`
+}
+
+type CurrencyFormat struct {
+	Description      string `json:"description"`
+	IsoCode          string `json:"iso_code"`
+	ExampleFormat    string `json:"example_format"`
+	DecimalDigits    int32  `json:"decimal_digits"`
+	DecimalSeparator string `json:"decimal_separator"`
+	SymbolFirst      bool   `json:"symbol_first"`
+	GroupSeparator   string `json:"group_separator"`
+	CurrencySymbol   string `json:"currency_symbol"`
+	DisplaySymbol    bool   `json:"display_symbol"`
+}
+
+type DateFormat struct {
+	Format string `json:"format"`
+}
+
+type LoadAccountPeriodicValue map[any]int64
+
 type MonthDetail struct {
 	Month        string     `json:"month"`
 	Note         *string    `json:"note"`
@@ -217,6 +242,71 @@ type MonthDetail struct {
 	AgeOfMoney   *int32     `json:"age_of_money"`
 	Deleted      bool       `json:"deleted"`
 	Categories   []Category `json:"categories"`
+}
+
+type Payee struct {
+	ID                PayeeID    `json:"id"`
+	Name              string     `json:"name"`
+	TransferAccountID *AccountID `json:"transfer_account_id"`
+	Deleted           bool       `json:"deleted"`
+}
+
+type PayeeLocation struct {
+	ID        PayeeLocationID `json:"id"`
+	PayeeID   PayeeID         `json:"payee_id"`
+	Latitude  string          `json:"latitude"`
+	Longitude string          `json:"longitude"`
+	Deleted   bool            `json:"deleted"`
+}
+
+type PostAccountWrapper struct {
+	Account SaveAccount `json:"account"`
+}
+
+type SaveAccount struct {
+	Name    string      `json:"name"`
+	Type    AccountType `json:"type"`
+	Balance Milliunits  `json:""`
+}
+
+type ScheduledSubTransaction struct {
+	ID                     ScheduledSubTransactionID `json:"id"`
+	ScheduledTransactionID ScheduledTransactionID    `json:"scheduled_transaction_id"`
+	Amount                 Milliunits                `json:"amount"`
+	Memo                   *string                   `json:"memo"`
+	PayeeID                *PayeeID                  `json:"payee_id"`
+	CategoryID             *CategoryID               `json:"category_id"`
+	TransferAccountID      *AccountID                `json:"transfer_account_id"`
+	Deleted                bool                      `json:"deleted"`
+}
+
+type ScheduledTransactionSummary struct {
+	ID                ScheduledTransactionID `json:"id"`
+	DateFirst         string                 `json:"date_first"`
+	DateNext          string                 `json:"date_next"`
+	Frequency         ScheduleFrequency      `json:"frequency"`
+	Amount            Milliunits             `json:"amount"`
+	Memo              *string                `json:"memo"`
+	FlagColor         FlagColor              `json:"flag_color"`
+	AccountID         AccountID              `json:"account_id"`
+	PayeeID           *PayeeID               `json:"payee_id"`
+	CategoryID        *CategoryID            `json:"category_id"`
+	TransferAccountID *AccountID             `json:"transfer_account_id"`
+	Deleted           bool                   `json:"deleted"`
+}
+
+type SubTransaction struct {
+	ID                    SubTransactionID `json:"id"`
+	TransactionID         TransactionID    `json:"transaction_id"`
+	Amount                Milliunits       `json:"amount"`
+	Memo                  *string          `json:"memo"`
+	PayeeID               *PayeeID         `json:"payee_id"`
+	PayeeName             *string          `json:"payee_name"`
+	CategoryID            *CategoryID      `json:"category_id"`
+	CategoryName          *string          `json:"category_name"`
+	TransferAccountID     *AccountID       `json:"transfer_account_id"`
+	TransferTransactionID *TransactionID   `json:"transfer_transaction_id"`
+	Deleted               bool             `json:"deleted"`
 }
 
 type TransactionSummary struct {
@@ -239,89 +329,3 @@ type TransactionSummary struct {
 	DebtTransactionType     *DebtTransactionType `json:"debt_transaction_type"`
 	Deleted                 bool                 `json:"deleted"`
 }
-
-type SubTransaction struct {
-	ID                    SubTransactionID `json:"id"`
-	TransactionID         TransactionID    `json:"transaction_id"`
-	Amount                Milliunits       `json:"amount"`
-	Memo                  *string          `json:"memo"`
-	PayeeID               *PayeeID         `json:"payee_id"`
-	PayeeName             *string          `json:"payee_name"`
-	CategoryID            *CategoryID      `json:"category_id"`
-	CategoryName          *string          `json:"category_name"`
-	TransferAccountID     *AccountID       `json:"transfer_account_id"`
-	TransferTransactionID *TransactionID   `json:"transfer_transaction_id"`
-	Deleted               bool             `json:"deleted"`
-}
-
-type ScheduledTransactionSummary struct {
-	ID                ScheduledTransactionID `json:"id"`
-	DateFirst         string                 `json:"date_first"`
-	DateNext          string                 `json:"date_next"`
-	Frequency         ScheduleFrequency      `json:"frequency"`
-	Amount            Milliunits             `json:"amount"`
-	Memo              *string                `json:"memo"`
-	FlagColor         FlagColor              `json:"flag_color"`
-	AccountID         AccountID              `json:"account_id"`
-	PayeeID           *PayeeID               `json:"payee_id"`
-	CategoryID        *CategoryID            `json:"category_id"`
-	TransferAccountID *AccountID             `json:"transfer_account_id"`
-	Deleted           bool                   `json:"deleted"`
-}
-
-type ScheduledSubTransaction struct {
-	ID                     ScheduledSubTransactionID `json:"id"`
-	ScheduledTransactionID ScheduledTransactionID    `json:"scheduled_transaction_id"`
-	Amount                 Milliunits                `json:"amount"`
-	Memo                   *string                   `json:"memo"`
-	PayeeID                *PayeeID                  `json:"payee_id"`
-	CategoryID             *CategoryID               `json:"category_id"`
-	TransferAccountID      *AccountID                `json:"transfer_account_id"`
-	Deleted                bool                      `json:"deleted"`
-}
-
-type BudgetSettings struct {
-	DateFormat     *DateFormat     `json:"date_format"`
-	CurrencyFormat *CurrencyFormat `json:"currency_format"`
-}
-
-type DateFormat struct {
-	Format string `json:"format"`
-}
-
-type AccountsResponse struct {
-	Data AccountsResponseData `json:"data"`
-}
-
-type AccountsResponseData struct {
-	Accounts        []Account `json:"accounts"`
-	ServerKnowledge int64     `json:"server_knowledge"`
-}
-
-type AccountResponse struct {
-	Data AccountResponseData `json:"data"`
-}
-
-type AccountResponseData struct {
-	Account Account `json:"account"`
-}
-
-type PostAccountWrapper struct {
-	Account SaveAccount `json:"account"`
-}
-
-type SaveAccount struct{}
-
-type CurrencyFormat struct {
-	Description      string `json:"description"`
-	IsoCode          string `json:"iso_code"`
-	ExampleFormat    string `json:"example_format"`
-	DecimalDigits    int32  `json:"decimal_digits"`
-	DecimalSeparator string `json:"decimal_separator"`
-	SymbolFirst      bool   `json:"symbol_first"`
-	GroupSeparator   string `json:"group_separator"`
-	CurrencySymbol   string `json:"currency_symbol"`
-	DisplaySymbol    bool   `json:"display_symbol"`
-}
-
-type LoadAccountPeriodicValue struct{}
