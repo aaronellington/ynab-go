@@ -1,0 +1,21 @@
+{
+    "data": {
+        "budgets": [
+            {
+                "id": "foobar1"
+            },
+            {
+                "id": "foobar2"
+            },
+            {
+                "id": "foobar3"
+            },
+            {
+                "id": "foobar4"
+            },
+            {
+                "id": "foobar5"
+            }
+        ]
+    }
+}
