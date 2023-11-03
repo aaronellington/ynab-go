@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
-func New(accessToken string) *Service {
+func New(
+	accessToken string,
+	configFuncs ...ConfigFunc,
+) *Service {
 	c := &client{
 		httpClient: &http.Client{
 			Timeout: time.Second * 5,
@@ -13,7 +16,8 @@ func New(accessToken string) *Service {
 		accessToken: accessToken,
 	}
 
-	return &Service{
+	s := &Service{
+		client: c,
 		user: &UserService{
 			client: c,
 		},
@@ -42,9 +46,16 @@ func New(accessToken string) *Service {
 			client: c,
 		},
 	}
+
+	for _, configFunc := range configFuncs {
+		configFunc(s)
+	}
+
+	return s
 }
 
 type Service struct {
+	client                *client
 	user                  *UserService
 	budgets               *BudgetsService
 	accounts              *AccountsService
