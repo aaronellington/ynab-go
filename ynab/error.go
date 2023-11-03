@@ -1,6 +1,9 @@
 package ynab
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 type ErrorResponse struct {
 	ErrorDetail  ErrorDetail    `json:"error"`
@@ -14,5 +17,10 @@ type ErrorDetail struct {
 }
 
 func (err ErrorResponse) Error() string {
-	return err.ErrorDetail.Name // TODO: improve this
+	return fmt.Sprintf(
+		"YNAB API Error [%s]: %s - %s",
+		err.ErrorDetail.ID,
+		err.ErrorDetail.Name,
+		err.ErrorDetail.Detail,
+	)
 }

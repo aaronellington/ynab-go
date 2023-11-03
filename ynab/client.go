@@ -38,11 +38,11 @@ func (c *client) Do(request *http.Request, target any) error {
 	}
 
 	if response.StatusCode >= http.StatusBadRequest {
-		responseErr := &ErrorResponse{
+		responseErr := ErrorResponse{
 			HTTPResponse: response,
 		}
 
-		if err := json.Unmarshal(bodyBytes, responseErr); err != nil {
+		if err := json.Unmarshal(bodyBytes, &responseErr); err != nil {
 			return err
 		}
 
