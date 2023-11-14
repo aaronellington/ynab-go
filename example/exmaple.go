@@ -25,7 +25,26 @@ func main() {
 	accountsToReconcile := false
 	accountCount := 0
 
-	for _, budget := range budgets.Data.Budgets {
+	for _, budgetSummary := range budgets.Data.Budgets {
+		response, err := y.Budgets().Get(ctx, budgetSummary.ID, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		budget := response.Data.Budget
+
+		for _, month := range response.Data.Budget.Months {
+			if !month.IsCurrentMonth() {
+				continue
+			}
+
+			for _, category := range month.Categories {
+				if category.Balance < 0 {
+					log.Printf("OVER BUDGET: %s - %s", budget.Name, category.Name)
+				}
+			}
+		}
+
 		for _, account := range budget.Accounts {
 			if account.Closed || account.Deleted {
 				continue
@@ -39,7 +58,7 @@ func main() {
 			}
 
 			if account.LastReconciledAt == nil || account.LastReconciledAt.Before(reconciliationTarget) {
-				log.Printf("Need to reconcile account: %s - %s - https://app.ynab.com/%s/accounts/%s", budget.Name, account.Name, budget.ID, account.ID)
+				log.Printf("NEED TO RECONCILE ACCOUNT: %s - %s", budget.Name, account.Name)
 
 				accountsToReconcile = true
 			}

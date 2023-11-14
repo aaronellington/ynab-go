@@ -244,6 +244,10 @@ type MonthDetail struct {
 	Categories   []Category `json:"categories"`
 }
 
+func (m MonthDetail) IsCurrentMonth() bool {
+	return m.Month == time.Now().Format("2006-01")+"-01"
+}
+
 type Payee struct {
 	ID                PayeeID    `json:"id"`
 	Name              string     `json:"name"`
