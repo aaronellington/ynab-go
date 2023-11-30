@@ -45,12 +45,20 @@ func main() {
 			}
 		}
 
+		accountIDLookup := map[ynab.AccountID]ynab.Account{}
+
 		for _, account := range budget.Accounts {
+			accountIDLookup[account.ID] = account
+
 			if account.Closed || account.Deleted {
 				continue
 			}
 
 			accountCount++
+
+			if account.Balance > 200000 {
+				log.Printf("NEED TO MAKE PAYMENT: %s - %s", budget.Name, account.Name)
+			}
 
 			reconciliationTarget := beginningOfMonth
 			if account.OnBudget {
@@ -62,6 +70,23 @@ func main() {
 
 				accountsToReconcile = true
 			}
+		}
+
+		for _, transaction := range budget.Transactions {
+			account := accountIDLookup[transaction.AccountID]
+			if !account.OnBudget {
+				continue
+			}
+
+			if transaction.CategoryID != nil {
+				continue
+			}
+
+			if transaction.TransferAccountID != nil {
+				continue
+			}
+
+			log.Printf("NEED TO SET CATEGORY ON TRANSACTION IN ACCOUNT: %s - %s", budget.Name, account.Name)
 		}
 	}
 

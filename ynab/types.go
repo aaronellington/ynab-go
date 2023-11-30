@@ -5,7 +5,6 @@ import "time"
 type (
 	AccountID                 string
 	AccountType               string
-	Milliunits                int64
 	BudgetID                  string
 	CategoryGroupID           string
 	CategoryID                string
@@ -13,6 +12,7 @@ type (
 	FlagColor                 string
 	GoalType                  string
 	ImportID                  string
+	Milliunits                int64
 	PayeeID                   string
 	PayeeLocationID           string
 	ScheduledSubTransactionID string
@@ -21,6 +21,7 @@ type (
 	SubTransactionID          string
 	TransactionID             string
 	TransactionStatus         string
+	UserID                    string
 )
 
 const (
@@ -90,7 +91,7 @@ const (
 )
 
 type Account struct {
-	ID                  BudgetID                  `json:"id"`
+	ID                  AccountID                 `json:"id"`
 	Name                string                    `json:"name"`
 	Type                AccountType               `json:"type"`
 	OnBudget            bool                      `json:"on_budget"`
@@ -313,6 +314,22 @@ type SubTransaction struct {
 	Deleted               bool             `json:"deleted"`
 }
 
+type TransactionDetail struct {
+	TransactionSummary
+	AccountName    string           `json:"account_name"`
+	PayeeName      *string          `json:"payee_name"`
+	CategoryName   *string          `json:"category_name"`
+	SubTransaction []SubTransaction `json:"subtransactions"`
+}
+
+type TransactionsResponse struct {
+	Data TransactionsResponseData `json:"data"`
+}
+type TransactionsResponseData struct {
+	Transactions    []TransactionDetail `json:"transactions"`
+	ServerKnowledge int64               `json:"server_knowledge"`
+}
+
 type TransactionSummary struct {
 	ID                      TransactionID        `json:"id"`
 	Date                    string               `json:"date"`
@@ -332,4 +349,16 @@ type TransactionSummary struct {
 	ImportPayeeNameOriginal *string              `json:"import_payee_name_original"`
 	DebtTransactionType     *DebtTransactionType `json:"debt_transaction_type"`
 	Deleted                 bool                 `json:"deleted"`
+}
+
+type UserResponse struct {
+	Data UserResponseData `json:"data"`
+}
+
+type UserResponseData struct {
+	Data User `json:"user"`
+}
+
+type User struct {
+	ID UserID `json:"id"`
 }
