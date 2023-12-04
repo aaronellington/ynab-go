@@ -56,7 +56,7 @@ func main() {
 
 			accountCount++
 
-			if account.Balance > 200000 {
+			if account.OnBudget && account.Balance < -500000 {
 				log.Printf("NEED TO MAKE PAYMENT: %s - %s", budget.Name, account.Name)
 			}
 
