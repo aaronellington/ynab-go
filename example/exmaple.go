@@ -56,10 +56,6 @@ func main() {
 
 			accountCount++
 
-			if account.OnBudget && account.Balance < -500000 {
-				log.Printf("NEED TO MAKE PAYMENT: %s - %s", budget.Name, account.Name)
-			}
-
 			reconciliationTarget := beginningOfMonth
 			if account.OnBudget {
 				reconciliationTarget = twelveHoursAgo
