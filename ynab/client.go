@@ -30,7 +30,9 @@ func (c *client) Do(request *http.Request, target any) error {
 		return err
 	}
 
-	defer response.Body.Close()
+	defer func() {
+		_ = response.Body.Close()
+	}()
 
 	bodyBytes, err := io.ReadAll(response.Body)
 	if err != nil {
