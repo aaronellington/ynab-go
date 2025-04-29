@@ -1,4 +1,4 @@
-.PHONY: full clean lint lint-go fix fix-go test test-go build dev-go watch docs-go
+.PHONY: full clean lint lint-go fix fix-go test test-go build watch docs-go
 
 SHELL=/bin/bash -o pipefail
 $(shell git config core.hooksPath ops/git-hooks)
@@ -37,9 +37,6 @@ test-go:
 
 ## Build the project
 build:
-
-dev-go:
-	go run .
 
 ## Watch the project
 watch:
